@@ -31,6 +31,7 @@ public class User {
     @Column(name = "roles", nullable=false)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
     private List<Role> roles;
 
     @Column(name = "created_at")

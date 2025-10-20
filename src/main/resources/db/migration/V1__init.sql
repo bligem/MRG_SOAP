@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- user_roles as element collection
 CREATE TABLE IF NOT EXISTS user_roles (
   user_id UUID NOT NULL,
-  role VARCHAR(50) NOT NULL,
+  roles VARCHAR(50) NOT NULL,
   CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS posts (
 -- post_tags element collection
 CREATE TABLE IF NOT EXISTS post_tags (
   post_id UUID NOT NULL,
-  tag VARCHAR(255) NOT NULL,
+  tags VARCHAR(255) NOT NULL,
   CONSTRAINT fk_post_tags_post FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
 );
 
