@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/user").hasRole(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.GET, "/api/user").hasRole(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.PUT, "/api/user").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
+                        .requestMatchers(HttpMethod.GET, "/api/external/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 );

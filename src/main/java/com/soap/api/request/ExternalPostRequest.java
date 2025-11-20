@@ -1,4 +1,4 @@
-package com.soap.api.request.user;
+package com.soap.api.request;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JacksonXmlRootElement(localName = "API")
-public class ListUsersRequest {
+public class ExternalPostRequest {
 
+    @NotBlank
     private Integer limit;
 }

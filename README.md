@@ -59,7 +59,7 @@ Request (UserRequest)
 **5. PUT /api/user — Update user**
 
 Description: Updates user profile. Only logged-in user (or admin) can modify.
-Auth: Required (Authorization).
+Auth: Required
 Consumes / Produces: application/xml
 
 Request (UpdateUserRequest)
@@ -91,7 +91,7 @@ Request (UserRequest)
 **7. POST /api/posts — Create a post**
 
 Description: Creates a new post linked to logged-in user.
-Auth: Required (Authorization).
+Auth: Required
 Consumes / Produces: application/xml
 
 Request (CreatePostRequest)
@@ -139,7 +139,7 @@ Request (ListPostsByUserRequest)
 **10. PUT /api/posts — Update post**
 
 Description: Updates a post. Owner or admin only.
-Auth: Required (Authorization).
+Auth: Required
 Consumes / Produces: application/xml
 
 Request (UpdatePostRequest)
@@ -158,7 +158,7 @@ Request (UpdatePostRequest)
 **11. DELETE /api/posts — Delete post**
 
 Description: Deletes a post. Admin can delete any; user can delete own.
-Auth: Required (Authorization).
+Auth: Required
 Consumes / Produces: application/xml
 
 Request
