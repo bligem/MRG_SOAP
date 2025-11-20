@@ -165,3 +165,27 @@ Request
   <id>3fa85f64-5717-4562-b3fc-2c963f66afa6</id>
 </API>
 ```
+
+**How to run**
+
+Set up fields in docker-compose:
+```jsunicoderegexp
+      POSTGRES_DB: api_db
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: api_pass
+```
+
+Set up fields in application.properties inside of resources:
+
+```jsunicoderegexp
+      app.jwt.secret: YOUR_SECRET
+      server.port: PORT
+```
+
+Adjust application.yml
+
+Build project:
+```shell
+mvn clean package
+```
+
