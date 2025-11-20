@@ -2,16 +2,17 @@ package com.soap.api.service;
 
 import com.soap.api.dto.ExternalPostDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class ExternalPostService {
 
-    private static final String BASE_URL = "https://jsonplaceholder.typicode.com/posts";
+    private static final URI BASE_URL = URI.create("https://jsonplaceholder.typicode.com/posts");
     private final RestTemplate restTemplate;
 
     public ExternalPostService() {
@@ -29,20 +30,27 @@ public class ExternalPostService {
     }
 
     private ClientHttpRequestFactory clientHttpRequestFactory() {
-        var factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(5000);
-        return factory;
+        return new SimpleClientHttpRequestFactory() {
+            @Override
+            protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
+                super.prepareConnection(connection, httpMethod);
+                connection.setInstanceFollowRedirects(false);
+                setConnectTimeout(3000);
+                setReadTimeout(5000);
+            }
+        };
     }
+
 
     public List<ExternalPostDto> fetchPosts(Integer limit) {
         try {
-            URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL).build().toUri();
+            limit = parseLimit(limit);
+            URI uri = UriComponentsBuilder.fromUri(BASE_URL).build().toUri();
             ExternalPostDto[] response = restTemplate.getForObject(uri, ExternalPostDto[].class);
 
             return Arrays.stream(response)
+                    .limit(parseLimit(limit))
                     .filter(p -> p.getId() != null && p.getTitle() != null && !p.getTitle().isBlank())
-                    .limit(limit != null && limit > 0 ? limit : 10)
                     .collect(Collectors.toList());
 
         } catch (HttpClientErrorException e) {
@@ -55,5 +63,10 @@ public class ExternalPostService {
             log.error("Unknown error fetching posts: {}", e.getMessage());
             throw new RuntimeException("Unknown error fetching external posts", e);
         }
+    }
+    private int parseLimit(Integer limit) {
+        int l = 10;
+        if (limit != null && limit >= 1 && limit <= 50) l = limit;
+        return l;
     }
 }
