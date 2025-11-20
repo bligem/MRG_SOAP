@@ -1,3 +1,5 @@
+# MGR_SOAP
+
 Endpoints
 
 **1. POST /api/user/register — Register a new user**
