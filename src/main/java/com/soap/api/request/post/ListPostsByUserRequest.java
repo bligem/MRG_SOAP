@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @JacksonXmlRootElement(localName = "API")
 public class ListPostsByUserRequest {
     private String userId;
+    private Integer limit;
 }

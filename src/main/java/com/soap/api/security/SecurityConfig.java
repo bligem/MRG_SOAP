@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,7 +42,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))//Arrays.toString(Role.values())
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.DELETE, "/api/user").hasRole(Role.ADMIN.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/user").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/user").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
+                        //.requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 );
 

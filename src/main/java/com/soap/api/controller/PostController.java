@@ -25,15 +25,14 @@ public class PostController {
     private final PostService postService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping(path = "/posts")
+    @PostMapping(path = "/posts", produces = "application/xml")
     public PostDto createPost(@RequestHeader("Authorization") String authHeader,
                               @Valid @RequestBody CreatePostRequest req) {
         TokenDto caller = jwtUtil.parseAuthHeader(authHeader);
-        // TokenDto assumed to expose getUserId() and getRoles() returning List<Role>
         return postService.create(req, caller.getUserId());
     }
 
-    @GetMapping(path = "/posts")
+    @GetMapping(path = "/posts", produces = "application/xml")
     public List<PostDto> listPosts(@RequestHeader(value = "Authorization", required = false) String authHeader,
                                    @Valid @RequestBody(required = false) ListPostsRequest req) {
         TokenDto caller = authHeader != null ? jwtUtil.parseAuthHeader(authHeader) : null;
@@ -42,7 +41,7 @@ public class PostController {
         return postService.listPosts(req, callerId, roles);
     }
 
-    @GetMapping(path = "/posts/byUser")
+    @GetMapping(path = "/posts/byUser", produces = "application/xml")
     public List<PostDto> listPostsByUser(@RequestHeader(value = "Authorization", required = false) String authHeader,
                                          @Valid @RequestBody(required = false) ListPostsByUserRequest req) {
         TokenDto caller = authHeader != null ? jwtUtil.parseAuthHeader(authHeader) : null;

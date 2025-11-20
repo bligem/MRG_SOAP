@@ -24,22 +24,22 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @GetMapping(path = "/users")
+    @GetMapping(path = "/users", produces = "application/xml")
     public List<UserDto> usersList(@Valid @RequestBody ListUsersRequest req){
         return userService.listUsers(req.getLimit());
     }
-    @GetMapping(path = "/user")
+    @GetMapping(path = "/user", produces = "application/xml")
     public Optional<UserDto> listUser(@Valid @RequestBody UserRequest req){
         return userService.getUserDto(req.getId());
     }
-    @PutMapping(path = "/user")
+    @PutMapping(path = "/user", produces = "application/xml")
     public UserDto updateUser(
             @RequestHeader(value = "Authorization", required = true) String authHeader,
             @Valid @RequestBody UpdateUserRequest req) {
         TokenDto caller = jwtUtil.parseAuthHeader(authHeader);
         return userService.update(req, caller.getUserId(), caller.getRoles());
     }
-    @DeleteMapping(path = "/user")
+    @DeleteMapping(path = "/user", produces = "application/xml")
     public DeleteUserResponse deleteUser(
             @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody UserRequest req) {

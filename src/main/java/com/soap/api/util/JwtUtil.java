@@ -87,27 +87,6 @@ public class JwtUtil {
         return List.of();
     }
 
-//    @SuppressWarnings("unchecked")
-//    public List<Role> getRolesFromClaimsAsRoles(Claims claims) {
-//        Object r = claims.get("roles");
-//        if (r == null) return List.of();
-//        // Expecting a list of strings (role names). Could be enums serialized by jjwt,
-//        // but being defensive: convert each element to Role via Role.valueOf.
-//        List<?> raw = (List<?>) r;
-//        List<Role> out = new ArrayList<>();
-//        for (Object o : raw) {
-//            if (o == null) continue;
-//            String s = o.toString().trim().toUpperCase();
-//            try {
-//                out.add(Role.valueOf(s));
-//            } catch (IllegalArgumentException ex) {
-//                // invalid role in token -> treat as bad token
-//                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid role in token");
-//            }
-//        }
-//        return out;
-//    }
-
 
     /**
      * Parse the Authorization header ("Bearer ...") and return TokenDto(userId, roles-as-Role).

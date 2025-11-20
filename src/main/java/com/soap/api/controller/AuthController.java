@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private UserService userService;
 
-    @PostMapping(path = "/user/register")
+    @PostMapping(path = "/user/register", produces = "application/xml")
     public UserDto register(@Valid @RequestBody RegisterRequest req) {
         return userService.register(req);
     }
 
-    @PostMapping(path = "/user/login")
+    @PostMapping(path = "/user/login", produces = "application/xml")
     public LoginResponse login(@Valid @RequestBody LoginRequest req) {
         return userService.loginAndBuildResponse(req);
     }

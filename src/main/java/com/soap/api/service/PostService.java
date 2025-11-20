@@ -76,11 +76,9 @@ public class PostService {
         var pageable = PageRequest.of(0, limit);
 
         if (callerId == null) {
-            // not logged in -> only published
             return repo.findByPublishedTrueOrderByCreatedAtDesc(pageable).stream()
                     .map(PostDto::fromEntity).collect(Collectors.toList());
         } else {
-            // logged in -> if admin then all posts, else published OR own
             boolean isAdmin = RoleUtils.hasRole(callerRoles, Role.ADMIN);
             if (isAdmin) {
                 return repo.findAllByOrderByCreatedAtDesc(pageable).stream().map(PostDto::fromEntity).collect(Collectors.toList());
@@ -97,7 +95,7 @@ public class PostService {
      * If caller requests own posts -> return all (including unpublished).
      */
     public List<PostDto> listPostsByUser(ListPostsByUserRequest req, UUID callerId, List<Role> callerRoles) {
-        Integer limit = 10;
+        int limit = parseLimit(req != null ? req.getLimit() : null);
         var pageable = PageRequest.of(0, limit);
 
         UUID requested = null;

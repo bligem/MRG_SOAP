@@ -94,16 +94,18 @@ public class UserService {
         if (req.getName() != null) user.setName(req.getName());
         if (req.getPassword() != null) user.setPasswordHash(encoder.encode(req.getPassword()));
 
-        boolean callerIsAdmin = callerRoles != null && callerRoles.contains(Role.ADMIN);
-        if (!callerIsAdmin) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin may change roles");
-        }
+        if (req.getRoles() != null) {
+            boolean callerIsAdmin = callerRoles != null && callerRoles.contains(Role.ADMIN);
+            if (!callerIsAdmin) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin can change roles");
+            }
 
-        List<Role> newRoles = RoleUtils.toRoleList(req.getRoles());
-        if (newRoles.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Roles must contain at least one role");
+            List<Role> newRoles = RoleUtils.toRoleList(req.getRoles());
+            if (newRoles.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Roles must contain at least one role");
+            }
+            user.setRoles(new ArrayList<>(newRoles));
         }
-        user.setRoles(new ArrayList<>(newRoles));
 
         user.setUpdatedAt(OffsetDateTime.now());
         user = repo.save(user);

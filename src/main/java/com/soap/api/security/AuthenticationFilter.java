@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -34,6 +36,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.debug("Auth header present? {}", header != null && header.startsWith("Bearer "));
+
         if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -47,19 +51,18 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             UUID userId = jwtUtil.getUserIdFromClaims(claims);
             List<Role> roles = jwtUtil.getRolesFromClaimsAsRoles(claims);
 
-            // build authorities with ROLE_ prefix (Spring's default)
             List<SimpleGrantedAuthority> auths = roles.stream()
                     .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
                     .collect(Collectors.toList());
 
-            // principal can be the userId string or a small principal object
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userId.toString(), null, auths);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("Authenticated user {} with roles {}", userId, roles);
         } catch (JwtException | IllegalArgumentException ex) {
-            // invalid token -> clear security context and continue; entry point will handle unauthorized if needed
             SecurityContextHolder.clearContext();
+            log.warn("JWT parsing/validation failed: {}", ex.getMessage(), ex);
         }
 
         filterChain.doFilter(request, response);
