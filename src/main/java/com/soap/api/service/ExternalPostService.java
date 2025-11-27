@@ -2,6 +2,8 @@ package com.soap.api.service;
 
 import com.soap.api.dto.ExternalPostDto;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -44,13 +46,17 @@ public class ExternalPostService {
 
     public List<ExternalPostDto> fetchPosts(Integer limit) {
         try {
-            limit = parseLimit(limit);
-            URI uri = UriComponentsBuilder.fromUri(BASE_URL).build().toUri();
+            URI uri = UriComponentsBuilder.fromUri(BASE_URL)
+                    .queryParam("_limit", parseLimit(limit))
+                    .build().toUri();
             ExternalPostDto[] response = restTemplate.getForObject(uri, ExternalPostDto[].class);
-
             return Arrays.stream(response)
-                    .limit(parseLimit(limit))
+                    .peek(post -> {
+                        post.setTitle(Jsoup.clean(post.getTitle(), Safelist.basicWithImages()));
+                        post.setBody(Jsoup.clean(post.getBody(), Safelist.basicWithImages()));
+                    })
                     .filter(p -> p.getId() != null && p.getTitle() != null && !p.getTitle().isBlank())
+                    .limit(parseLimit(limit))
                     .collect(Collectors.toList());
 
         } catch (HttpClientErrorException e) {
