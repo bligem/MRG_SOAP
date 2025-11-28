@@ -127,7 +127,11 @@ public class UserService {
         return targetId;
     }
 
-    public Optional<UserDto> getUserDto(UUID id) {
+    public Optional<UserDto> getUserDto(UUID id, TokenDto caller) {
+        boolean isAdmin = caller.getRoles() != null && caller.getRoles().contains(Role.ADMIN);
+        if (!isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin can access this operation");
+        }
         return repo.findById(id).map(UserDto::fromEntity);
     }
 

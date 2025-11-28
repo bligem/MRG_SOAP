@@ -10,11 +10,19 @@ Consumes / Produces: application/xml
 
 Request (RegisterRequest)
 ```xml
-<API>
-  <email>user@example.com</email>
-  <name>John Doe</name>
-  <password>SuperSecret123!</password>
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:api="http://soap.api.com/">
+    <soap:Body>
+        <api:register>
+            <RegisterRequest>
+                <email>user@example.com</email>
+                <name>John Doe</name>
+                <password>SuperSecret123!</password>
+            </RegisterRequest>
+        </api:register>
+    </soap:Body>
+</soap:Envelope>
+
 ```
 
 Success (200 OK): Returns UserDto (new user).
@@ -28,10 +36,19 @@ Consumes / Produces: application/xml
 
 Request (LoginRequest)
 ```xml
-<API>
-  <email>user@example.com</email>
-  <password>SuperSecret123!</password>
-</API>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:api="http://soap.api.com/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <api:login>
+            <LoginRequest>
+                <email>user@example.com</email>
+                <password>SuperSecret123!</password>
+            </LoginRequest>
+        </api:login>
+    </soapenv:Body>
+</soapenv:Envelope>
+
 ```
 
 **3. GET /api/users — List users**
@@ -50,9 +67,20 @@ Consumes / Produces: application/xml
 
 Request (UserRequest)
 ```xml
-<API>
-  <id>c3b7a0d1-2f9d-4b2d-9a6f-1f2b3c4d5e6f</id>
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:api="http://soap.api.com/">
+    <soap:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soap:Header>
+    <soap:Body>
+        <api:listUser>
+            <ListUser>
+                <id>UUID</id>
+            </ListUser>
+        </api:listUser>
+    </soap:Body>
+</soap:Envelope>
+
 ```
 
 
@@ -64,15 +92,24 @@ Consumes / Produces: application/xml
 
 Request (UpdateUserRequest)
 ```xml
-<API>
-  <id>c3b7a0d1-2f9d-4b2d-9a6f-1f2b3c4d5e6f</id> <!-- optional -->
-  <email>new@example.com</email>
-  <name>New Name</name>
-  <password>NewPass123!</password>
-  <roles>
-    <role>USER</role>
-  </roles> <!-- admin only -->
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://soap.api.com/">
+    <soap:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soap:Header>
+    <soap:Body>
+        <api:updateUser>
+            <UpdateUser>
+                <id>UUID</id>
+                <email>user@example.com</email>
+                <name>user</name>
+                <password>SuperSecret123!</password>
+                <roles>
+                    <role>ROLE</role>
+                </roles>
+            </UpdateUser>
+        </api:updateUser>
+    </soap:Body>
+</soap:Envelope>
 ```
 
 **6. DELETE /api/user — Delete user**
@@ -83,9 +120,20 @@ Consumes / Produces: application/xml
 
 Request (UserRequest)
 ```xml
-<API>
-  <id>c3b7a0d1-2f9d-4b2d-9a6f-1f2b3c4d5e6f</id>
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:api="http://soap.api.com/">
+    <soap:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soap:Header>
+    <soap:Body>
+        <api:deleteUser>
+            <DeleteUser>
+                <id>79c872ff-1f9a-4d01-88bc-9046f34b0314</id>
+            </DeleteUser>
+        </api:deleteUser>
+    </soap:Body>
+</soap:Envelope>
+
 ```
 
 **7. POST /api/posts — Create a post**
@@ -96,14 +144,24 @@ Consumes / Produces: application/xml
 
 Request (CreatePostRequest)
 ```xml
-<API>
-  <title>My first post</title>
-  <content>Here is the content</content>
-  <tags>
-    <tag>Test1</tag>
-  </tags>
-  <published>true</published>
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:api="http://soap.api.com/">
+    <soap:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soap:Header>
+    <soap:Body>
+        <api:createPost>
+            <CreatePost>
+                <title>title</title>
+                <content>content</content>
+                <tags>
+                    <tag>tag</tag>
+                </tags>
+                <published>true / false</published>
+            </CreatePost>
+        </api:createPost>
+    </soap:Body>
+</soap:Envelope>
 ```
 
 **8. GET /api/posts — List posts / get a single post**
@@ -114,10 +172,18 @@ Consumes / Produces: application/xml
 
 Request (ListPostsRequest)
 ```xml
-<API>
-  <id>3fa85f64-5717-4562-b3fc-2c963f66afa6</id> <!-- optional -->
-  <limit>10</limit> <!-- optional -->
-</API>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:api="http://soap.api.com/">
+    <soapenv:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soapenv:Header>
+    <soapenv:Body>
+        <api:listPosts>
+            <ListPosts/>
+        </api:listPosts>
+    </soapenv:Body>
+</soapenv:Envelope>
+
 ```
 
 
@@ -129,10 +195,17 @@ Consumes / Produces: application/xml
 
 Request (ListPostsByUserRequest)
 ```xml
-<API>
-  <userId>c3b7a0d1-2f9d-4b2d-9a6f-1f2b3c4d5e6f</userId> <!-- optional -->
-  <limit>10</limit> <!-- optional -->
-</API>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:api="http://soap.api.com/">
+    <soapenv:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soapenv:Header>
+    <soapenv:Body>
+        <api:listPostsByUser>
+            <ListPostsByUserRequest/>
+        </api:listPostsByUser>
+    </soapenv:Body>
+</soapenv:Envelope>
 ```
 
 
@@ -144,15 +217,26 @@ Consumes / Produces: application/xml
 
 Request (UpdatePostRequest)
 ```xml
-<API>
-  <id>3fa85f64-5717-4562-b3fc-2c963f66afa6</id>
-  <title>Updated title</title>
-  <content>Updated content</content>
-  <tags>
-    <tag>NewTag</tag>
-  </tags>
-  <published>false</published>
-</API>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:api="http://soap.api.com/">
+    <soapenv:Header>
+        <api:Authorization>Bearer TOKEN</api:Authorization>
+    </soapenv:Header>
+    <soapenv:Body>
+        <api:updatePost>
+            <UpdatePost>
+                <id>UUID</id>
+                <title>title</title>
+                <content>content</content>
+                <tags>
+                    <tag>tag</tag>
+                </tags>
+                <published>true / false</published>
+            </UpdatePost>
+        </api:updatePost>
+    </soapenv:Body>
+</soapenv:Envelope>
+
 ```
 
 **11. DELETE /api/posts — Delete post**
@@ -163,9 +247,17 @@ Consumes / Produces: application/xml
 
 Request
 ```xml
-<API>
-  <id>3fa85f64-5717-4562-b3fc-2c963f66afa6</id>
-</API>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:api="http://soap.api.com/">
+    <soap:Body>
+        <api:deletePost>
+            <DeletePost>
+                <id>3fa85f64-5717-4562-b3fc-2c963f66afa6</id>
+            </DeletePost>
+        </api:deletePost>
+    </soap:Body>
+</soap:Envelope>
+
 ```
 
 **How to run**

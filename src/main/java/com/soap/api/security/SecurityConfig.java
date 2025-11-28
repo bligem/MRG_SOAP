@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 
@@ -36,20 +37,21 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/user/register", "/api/user/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/byUser", "/api/posts/search").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
-                        .requestMatchers(HttpMethod.PUT, "/api/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
-                        .requestMatchers(HttpMethod.DELETE, "/api/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))//Arrays.toString(Role.values())
+                        .requestMatchers(HttpMethod.GET, "/api/user/register", "/api/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/byUser").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/byUser").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
+
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole(Role.ADMIN.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/api/user").hasRole(Role.ADMIN.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole(Role.ADMIN.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/user").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
+                        .requestMatchers(HttpMethod.POST, "/api/users").hasRole(Role.ADMIN.toString())
+
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
+                        .requestMatchers(HttpMethod.POST, "/api/user").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
                         .requestMatchers(HttpMethod.GET, "/api/external/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/external/posts").hasAnyRole(Arrays.stream(Role.values()).map(Enum::name).toArray(String[]::new))
                         .anyRequest().authenticated()
                 );
 
-        http.addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

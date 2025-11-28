@@ -1,10 +1,10 @@
 package com.soap.api.request.post;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@JacksonXmlRootElement(localName = "API")
+@XmlRootElement(name = "CreatePostRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CreatePostRequest {
     @NotBlank
     @Size(min = 3, max = 70)
@@ -22,9 +23,12 @@ public class CreatePostRequest {
     @Size(min = 3, max = 5000)
     private String content;
 
-    @JacksonXmlElementWrapper(localName = "tags")
-    @JacksonXmlProperty(localName = "tag")
-    private List<String> tags;
+    @NotEmpty
+    @Size(min = 3)
+    @XmlElementWrapper(name = "tags")
+    @XmlElement(name = "tag")
+    private List<@NotBlank String> tags;
 
+    @NotNull
     private Boolean published;
 }

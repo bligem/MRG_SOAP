@@ -1,9 +1,6 @@
 package com.soap.api.request.user;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import lombok.AllArgsConstructor;
+import jakarta.xml.bind.annotation.*;
 import lombok.Data;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -14,8 +11,8 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@JacksonXmlRootElement(localName = "API")
+@XmlRootElement(name = "UpdateUserRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UpdateUserRequest {
     // optional: if absent, update current (caller) user
     private UUID id;
@@ -29,7 +26,7 @@ public class UpdateUserRequest {
     @Size(min = 8)
     private String password;
 
-    @JacksonXmlElementWrapper(localName = "roles")
-    @JacksonXmlProperty(localName = "role")
+    @XmlElementWrapper(name = "roles")
+    @XmlElement(name = "role")
     private List<String> roles;
 }

@@ -6,6 +6,7 @@ import com.soap.api.dto.PostDto;
 import com.soap.api.dto.Role;
 import com.soap.api.request.post.*;
 import com.soap.api.util.RoleUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,10 @@ public class PostService {
         if (title == null || title.isEmpty() || content == null || content.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title and content are required");
         }
+        if (req.getTags() == null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tags are required");
+        }
 
         Post p = new Post();
         p.setUserId(callerId);
@@ -59,6 +64,7 @@ public class PostService {
     /**
      * List posts (or get single if id provided)
      */
+    @Transactional
     public List<PostDto> listPosts(ListPostsRequest req, UUID callerId, List<Role> callerRoles) {
         // if id present -> single post behaviour
         if (req != null && req.getId() != null && !req.getId().isBlank()) {
@@ -94,6 +100,7 @@ public class PostService {
      * If caller requests other user's posts and caller is not admin -> only published posts for that user.
      * If caller requests own posts -> return all (including unpublished).
      */
+    @Transactional
     public List<PostDto> listPostsByUser(ListPostsByUserRequest req, UUID callerId, List<Role> callerRoles) {
         int limit = parseLimit(req != null ? req.getLimit() : null);
         var pageable = PageRequest.of(0, limit);

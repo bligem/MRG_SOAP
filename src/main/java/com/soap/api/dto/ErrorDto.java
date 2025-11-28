@@ -1,14 +1,16 @@
 package com.soap.api.dto;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JacksonXmlRootElement(localName = "error")
+@XmlRootElement(name = "ErrorResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ErrorDto {
     private int status;
     private String message;

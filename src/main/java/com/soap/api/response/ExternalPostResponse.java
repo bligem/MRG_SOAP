@@ -2,20 +2,15 @@
 //
 //
 //import com.soap.api.dto.ExternalPostDto;
-//import jakarta.xml.bind.annotation.XmlAccessType;
-//import jakarta.xml.bind.annotation.XmlAccessorType;
-//import jakarta.xml.bind.annotation.XmlElement;
-//import jakarta.xml.bind.annotation.XmlElementWrapper;
-//import jakarta.xml.bind.annotation.XmlRootElement;
+//import jakarta.xml.bind.annotation.*;
 //import lombok.Data;
-//import lombok.Getter;
-//import lombok.Setter;
 //
 //
 //import java.util.List;
 //
 //@Data
-//@XmlRootElement(name = "externalPostResponse")
+//@XmlRootElement(name = "ExternalPostResponse")
+//@XmlType(name = "ExternalPostResponseType", namespace = "http://soap.api.com/")
 //@XmlAccessorType(XmlAccessType.FIELD)
 //public class ExternalPostResponse {
 //

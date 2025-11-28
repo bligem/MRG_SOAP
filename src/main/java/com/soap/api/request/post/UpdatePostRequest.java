@@ -1,8 +1,6 @@
 package com.soap.api.request.post;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import jakarta.xml.bind.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +12,8 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@JacksonXmlRootElement(localName = "API")
+@XmlRootElement(name = "UpdatePostRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UpdatePostRequest {
 
     @NotBlank
@@ -26,8 +25,8 @@ public class UpdatePostRequest {
     @Size(min = 3, max = 5000)
     private String content;
 
-    @JacksonXmlElementWrapper(localName = "tags")
-    @JacksonXmlProperty(localName = "tag")
+    @XmlElementWrapper(name = "tags")
+    @XmlElement(name = "tag")
     private List<String> tags;
 
     private Boolean published;

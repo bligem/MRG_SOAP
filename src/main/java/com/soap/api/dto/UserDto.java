@@ -1,26 +1,31 @@
 package com.soap.api.dto;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.soap.api.db.User;
+import jakarta.xml.bind.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@JacksonXmlRootElement(localName="userResponse")
-@Builder
+@XmlRootElement(name = "User")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     public UUID id;
     public String email;
     public String name;
-    @JacksonXmlElementWrapper(localName = "roles")
-    @JacksonXmlProperty(localName = "role")
+
+    @XmlElementWrapper(name = "roles")
+    @XmlElement(name = "role")
     public List<Role> roles;
+
     public OffsetDateTime createdAt;
     public OffsetDateTime updatedAt;
 

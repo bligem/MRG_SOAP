@@ -4,69 +4,72 @@ import com.soap.api.dto.PostDto;
 import com.soap.api.dto.Role;
 import com.soap.api.dto.TokenDto;
 import com.soap.api.request.post.*;
-import com.soap.api.response.DeleteUserResponse;
+import com.soap.api.response.DeletePostResponse;
+import com.soap.api.response.ListPostsResponse;
 import com.soap.api.service.PostService;
 import com.soap.api.util.JwtUtil;
-import com.soap.api.util.RoleUtils;
 
-import jakarta.validation.Valid;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping(path = "/api", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
+@WebService(
+        serviceName = "PostService",
+        portName = "PostServicePort",
+        targetNamespace = "http://soap.api.com/"
+)
+@Service
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping(path = "/posts", produces = "application/xml")
-    public PostDto createPost(@RequestHeader("Authorization") String authHeader,
-                              @Valid @RequestBody CreatePostRequest req) {
+    @WebMethod
+    public PostDto createPost(
+            @WebParam(name = "Authorization", header = true) String authHeader,
+            @WebParam(name = "CreatePost") CreatePostRequest req) {
+
         TokenDto caller = jwtUtil.parseAuthHeader(authHeader);
         return postService.create(req, caller.getUserId());
     }
 
-    @GetMapping(path = "/posts", produces = "application/xml")
-    public List<PostDto> listPosts(@RequestHeader(value = "Authorization", required = false) String authHeader,
-                                   @Valid @RequestBody(required = false) ListPostsRequest req) {
+    @WebMethod
+    public ListPostsResponse listPosts(
+            @WebParam(name = "Authorization", header = true) String authHeader,
+            @WebParam(name = "ListPosts") ListPostsRequest req) {
+
         TokenDto caller = authHeader != null ? jwtUtil.parseAuthHeader(authHeader) : null;
         UUID callerId = caller != null ? caller.getUserId() : null;
         List<Role> roles = caller != null ? caller.getRoles() : List.of();
-        return postService.listPosts(req, callerId, roles);
+        List<PostDto> posts = postService.listPosts(req, callerId, roles);
+        return new ListPostsResponse(posts);
     }
 
-    @GetMapping(path = "/posts/byUser", produces = "application/xml")
-    public List<PostDto> listPostsByUser(@RequestHeader(value = "Authorization", required = false) String authHeader,
-                                         @Valid @RequestBody(required = false) ListPostsByUserRequest req) {
-        TokenDto caller = authHeader != null ? jwtUtil.parseAuthHeader(authHeader) : null;
-        UUID callerId = caller != null ? caller.getUserId() : null;
-        List<Role> roles = caller != null ? caller.getRoles() : List.of();
-        return postService.listPostsByUser(req, callerId, roles);
-    }
-
-    @PutMapping(path = "/posts")
-    public PostDto updatePost(@RequestHeader("Authorization") String authHeader,
-                              @Valid @RequestBody UpdatePostRequest req) {
+    @WebMethod
+    public PostDto updatePost(
+            @WebParam(name = "Authorization", header = true) String authHeader,
+            @WebParam(name = "UpdatePost") UpdatePostRequest req) {
         TokenDto caller = jwtUtil.parseAuthHeader(authHeader);
         UUID callerId = caller.getUserId();
         List<Role> roles = caller.getRoles();
         return postService.update(req, callerId, roles);
     }
 
-    @DeleteMapping(path = "/posts")
-    public com.soap.api.response.DeleteUserResponse deletePost(@RequestHeader("Authorization") String authHeader,
-                                                               @Valid @RequestBody DeletePostRequest req) {
+    @WebMethod
+    public DeletePostResponse deletePost(
+            @WebParam(name = "Authorization", header = true) String authHeader,
+            @WebParam(name = "DeletePost") DeletePostRequest req) {
         TokenDto caller = jwtUtil.parseAuthHeader(authHeader);
         UUID callerId = caller.getUserId();
         List<Role> roles = caller.getRoles();
         postService.delete(req, callerId, roles);
-        // reuse simple response DTO (deleted + id) or create dedicated one for posts
-        return new com.soap.api.response.DeleteUserResponse(true, req.getId());
+        return new DeletePostResponse(true, req.getId());
     }
 }

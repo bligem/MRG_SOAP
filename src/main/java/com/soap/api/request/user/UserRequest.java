@@ -1,8 +1,9 @@
 package com.soap.api.request.user;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +11,8 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@JacksonXmlRootElement(localName = "API")
+@XmlRootElement(name = "UserRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserRequest {
 
     @NotBlank

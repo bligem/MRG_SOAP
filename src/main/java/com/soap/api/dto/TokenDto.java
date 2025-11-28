@@ -1,12 +1,12 @@
 package com.soap.api.dto;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@JacksonXmlRootElement(localName = "token")
+@XmlRootElement(name = "Token")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

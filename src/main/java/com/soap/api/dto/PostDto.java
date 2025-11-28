@@ -4,14 +4,22 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.soap.api.db.Post;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@JacksonXmlRootElement(localName = "postResponse")
+@XmlRootElement(name = "PostResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Data
 public class PostDto {
@@ -32,7 +40,7 @@ public class PostDto {
                 .userId(p.getUserId())
                 .title(p.getTitle())
                 .content(p.getContent())
-                .tags(p.getTags())
+                .tags(p.getTags() != null ? new java.util.ArrayList<>(p.getTags()) : java.util.List.of())
                 .published(p.isPublished())
                 .createdAt(p.getCreatedAt())
                 .updatedAt(p.getUpdatedAt())
